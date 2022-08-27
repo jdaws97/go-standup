@@ -10,9 +10,6 @@ import (
 	"github.com/jessevdk/go-flags"
 )
 
-var HOME = os.Getenv("HOME")
-var initial_config = &config.Config{7, []string{"DONE", "IN-PROGRESS", "BLOCKERS", "NOTES"}, HOME}
-
 
 var opts struct {
 	Category string `short:"c" long:"category" description:"Category you'd like your notes to be placed under. See your current categories within your config!\nEXAMPLE: standup -c in-progress"`
@@ -52,6 +49,8 @@ func map_category(category string, category_config []string) string {
 func main() {
 
 	// Initialize everything! 
+	var HOME, _ = os.UserHomeDir()
+	var initial_config = &config.Config{7, []string{"DONE", "IN-PROGRESS", "BLOCKERS", "NOTES"}, HOME}
 	parsed_config := config.Check_config(initial_config)
 	var category string
 
