@@ -62,7 +62,7 @@ func main() {
 	if strings.TrimSpace(opts.Category) != "" {
 		category = map_category(opts.Category, parsed_config.Categories)
 		if strings.TrimSpace(category) == "" {
-			log.Fatal("The category fsrom your argument is not in your config!")
+			log.Fatal("The category from your argument is not in your config!")
 		}
 	} else {
 		category = "NOTES"
@@ -77,6 +77,11 @@ func main() {
 	// Warn the user you can't open your notes and the config at the same time
 	if opts.Open && opts.Config {
 		log.Print("You can't open your notes and the config at the same time, choose one or the other!")
+	}
+
+	// Check if someone's parsing days_ago without asking to open their notes
+	if !opts.Open && opts.DaysAgo > 0 {
+		log.Fatalf("Pass in --open with -d, or else nothing will happen!")
 	}
 
 	// Create the standup struct holding all the values needed to be passed down for the notes
