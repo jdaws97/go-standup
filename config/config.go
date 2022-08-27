@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-var HOME = os.Getenv("HOME")
+
 
 type Config struct{
 	Days int
@@ -28,8 +28,8 @@ func parse_error(err error) {
 }
 
 
-func Open_config() {
-	cmd := exec.Command("vim", fmt.Sprintf("%s/.standup-config.json", HOME))
+func Open_config(home *string) {
+	cmd := exec.Command("vim", fmt.Sprintf("%s/.standup-config.json", *home))
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	err := cmd.Run()
@@ -50,22 +50,22 @@ func walk_directory(file_name string, path string) (bool) {
 }
 
 
-func Check_config(initial_config *Config) (Config){
+func Check_config(initial_config *Config, home string) (Config){
 
-	file_bool := walk_directory(".standup-config.json", HOME)
+	file_bool := walk_directory(".standup-config.json", home)
 
 	if file_bool {
-		return parse_config()
+		return parse_config(&home)
 	} else {
-		create_config(initial_config)
+		create_config(initial_config, &home)
 	}
-	return parse_config()
+	return parse_config(&home)
 }
 
 
-func create_config(initial_config *Config) {
+func create_config(initial_config *Config, home *string) {
 
-	os.Chdir(HOME)
+	os.Chdir(*home)
 
 	created_file, err := os.Create(".standup-config.json")
 	parse_error(err)
@@ -76,13 +76,13 @@ func create_config(initial_config *Config) {
 	err = ioutil.WriteFile(created_file.Name(), result, 0644)
 	parse_error(err)
 
-	log.Printf("Config %v created at path %v", created_file.Name(), HOME)
+	log.Printf("Config %v created at path %v", created_file.Name(), *home)
 }
 
 
-func parse_config() (Config){
+func parse_config(home *string) (Config){
 
-	os.Chdir(HOME)
+	os.Chdir(*home)
 
 	config_content, err := ioutil.ReadFile("./.standup-config.json")
 	parse_error(err)

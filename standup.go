@@ -49,9 +49,9 @@ func map_category(category string, category_config []string) string {
 func main() {
 
 	// Initialize everything! 
-	var HOME, _ = os.UserHomeDir()
-	var initial_config = &config.Config{7, []string{"DONE", "IN-PROGRESS", "BLOCKERS", "NOTES"}, HOME}
-	parsed_config := config.Check_config(initial_config)
+	var home, _ = os.UserHomeDir()
+	var initial_config = &config.Config{7, []string{"DONE", "IN-PROGRESS", "BLOCKERS", "NOTES"}, home}
+	parsed_config := config.Check_config(initial_config, home)
 	var category string
 
 	// Initialize parsed arguments into variables
@@ -70,8 +70,8 @@ func main() {
 
 	// Open the config if the open command isn't given
 	if opts.Config && !opts.Open {
-		config.Open_config()
-		parsed_config = config.Check_config(initial_config)
+		config.Open_config(&home)
+		parsed_config = config.Check_config(initial_config, home)
 	}
 
 	// Warn the user you can't open your notes and the config at the same time
